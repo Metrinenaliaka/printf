@@ -6,22 +6,27 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int _printf(const char *format, ...);
-int (*specifier(const char *))(va_list);
-
+#define BUFF_SIZE 1024
+#define F_HASH 8
+#define F_SPACE 16
+#define F_MINUS 1
+#define F_PLUS 2
+#define F_ZERO 4
+#define UNUSED(x) (void)(x)
 /**
- * struct op - struct for specifier to printer
- * @t: character to compare
- * @p: function to handle printing
+ * struct op - Struct op
+ * @fmt: The format.
+ * @p: The function associated.
  */
 typedef struct op
 {
-	char *t;
-	int (*p)(va_list);
-} op_t;
+	char fmt;
+	int (*p)(va_list, char[], int, int, int, int);
+}op_t;
 
-int p_char(va_list);
-int p_str(va_list);
-int p_cent(va_list);
-
+#define S_SHORT 1
+#define S_LONG 2
+int handle_print(const char *fmt, int *i,
+va_list list, char buffer[], int flags, int width, int precision, int size);
+int _printf(const char *format, ...);
 #endif
