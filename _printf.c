@@ -7,9 +7,10 @@
 int _printf(const char *format, ...)
 {
 	int i = 0, count = 0, temp = 0;
-	va_list ap, va_start(ap, format);
+	va_list ap;
 	int (*p)(va_list);
 
+	va_start(ap, format);
 	if (format == NULL)
 		return (-1);
 	while (format[i])
