@@ -1,41 +1,59 @@
 #include "main.h"
 /**
- * _printf - prints a string in a formatted way
- * @format: string to print
- * Return: number of characters printed
+ * _printf - Printf homemade
+ * @format: last variable
+ * Return: Printed number of characters
  */
 int _printf(const char *format, ...)
 {
-	int i = 0, count = 0, temp = 0;
+	int k, value = 0, count = 0;
+	int width, flags, size, index = 0, precision;
 	va_list ap;
-	int (*p)(va_list);
+	char buffer[BUFF_SIZE];
 
-	va_start(ap, format);
 	if (format == NULL)
 		return (-1);
-	while (format[i])
+	va_start(ap, format);
+	for (k = 0; format && format[k] != '\0'; k++)
 	{
-		if (format[i] != '%')
+		if (format[k] != '%')
 		{
-			temp = write(1, &format[i], 1), count = count + temp, i++;
-			continue;
+			buffer[index++] = format[k];
+			if (index == BUFF_SIZE)
+				print_buffer(buffer, &index);
+			/* write(1, &format[k], 1);*/
+			count++;
 		}
-		if (format[i] == '%')
+		else
 		{
-			p = specifier(&format[i + 1]);
-			if (p != NULL)
-			{
-				temp = p(ap), count += temp, i += 2;
-				continue;
-			}
-			if (format[i + 1] == '\0')
-				break;
-			if (format[i + 1] != '\0')
-			{
-				temp = write(1, &format[i + 1], 1), count += temp, i += 2;
-				continue;
-			}
+			flags = get_flags(format, &k);
+			width = get_width(format, &k, ap);
+			print_buffer(buffer, &index);
+			precision = get_precision(format, &k, ap);
+			size = get_size(format, &k);
+			++k;
+			value = handle_print(format, &k, ap, buffer,
+				flags, width, precision, size);
+			if (value == -1)
+				return (-1);
+			count += value;
 		}
 	}
+	print_buffer(buffer, &index);
+	va_end(ap);
 	return (count);
 }
+
+/**
+ * print_buffer - Prints contents of the buffer
+ * @buffer: Array of chars
+ * @index: Index that, represents the length.
+ */
+void print_buffer(char buffer[], int *index)
+{
+	if (*index > 0)
+		write(1, &buffer[0], *index);
+
+	*index = 0;
+}
+
