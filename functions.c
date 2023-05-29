@@ -47,7 +47,7 @@ int p_str(va_list ap)
 			string++;
 		}
 		return (count);
-		
+
 	}
 	return (0);
 }
