@@ -7,7 +7,8 @@
 #include <unistd.h>
 
 int _printf(const char *format, ...);
-int (*specifier(const char *))(va_list);
+int (specifier(const char *))(va_list);
+
 /**
  * struct op - struct for specifier to printer
  * @t: character to compare
