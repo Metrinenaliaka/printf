@@ -30,9 +30,9 @@ int print_rot13string(va_list args, char buffer[],
 		string = "(AHYY)";
 	for (a = 0; string[a]; a++)
 	{
-		for (b = 0; in[b]; b++)
+		for (b = 0; input[b]; b++)
 		{
-			if (input[j] == string[a])
+			if (input[b] == string[a])
 			{
 				y = output[b];
 				write(1, &y, 1);
@@ -87,15 +87,18 @@ int print_pointer(va_list args, char buffer[],
 	if ((flags & F_ZERO) && !(flags & F_MINUS))
 		pad = '0';
 	if (flags & F_PLUS)
+	{
 		ext_c = '+', len++;
+	}
 	else if (flags & F_SPACE)
+	{
 		ext_c = ' ', len++;
-
+	}
 	index++;
 
 	/*return (write(1, &buffer[i], BUFF_SIZE - i - 1));*/
 	return (write_pointer(buffer, index, len,
-		width, flags, padd, ext_c, pad_start));
+		width, flags, pad, ext_c, pad_start));
 }
 /**
  * print_non_printable - ascii codes in hexa of non printable chars

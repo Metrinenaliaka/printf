@@ -11,7 +11,7 @@
  * @size: Size specifier
  * Return: 1 or 2;
  */
-int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
+int handle_print(const char *fmt, int *ind, va_list ap, char buffer[],
 	int flags, int width, int precision, int size)
 {
 	int j, unknow_lens = 0, count = -1;
@@ -24,7 +24,7 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 	};
 	for (j = 0; fmt_args[j].fmt != '\0'; j++)
 		if (fmt[*ind] == fmt_args[j].fmt)
-			return (fmt_args[j].fn(ap, buffer, flags, width, precision, size));
+			return (fmt_args[j].p(ap, buffer, flags, width, precision, size));
 
 	if (fmt_args[j].fmt == '\0')
 	{

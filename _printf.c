@@ -1,4 +1,7 @@
 #include "main.h"
+int handle_print(const char *fmt, int *ind, va_list ap, char buffer[],
+		int flags, int width, int precision, int size);
+void print_buffer(char buffer[], int *index);
 /**
  * _printf - Printf homemade
  * @format: last variable
@@ -32,8 +35,7 @@ int _printf(const char *format, ...)
 			precision = get_precision(format, &k, ap);
 			size = get_size(format, &k);
 			++k;
-			value = handle_print(format, &k, ap, buffer,
-				flags, width, precision, size);
+			value = handle_print(format, &k, ap, buffer, flags, width, precision, size);
 			if (value == -1)
 				return (-1);
 			count += value;
