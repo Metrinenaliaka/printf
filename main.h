@@ -1,20 +1,20 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 #include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define BUFF_SIZE 1024
 #define F_HASH 8
-#define F_SPACE 16
-#define F_MINUS 1
 #define F_PLUS 2
+#define F_MINUS 1
+#define F_SPACE 16
 #define F_ZERO 4
 #define UNUSED(x) (void)(x)
 /**
- * struct op - Struct op
- * @fmt: The format.
- * @p: The function associated.
+ * struct op - Structure op
+ * @fmt: format.
+ * @p: function related to struct
  */
 typedef struct op
 {
@@ -61,15 +61,12 @@ int print_rot13string(va_list args, char buffer[],
 	int flags, int width, int precision, int size);
 int print_reverse(va_list args, char buffer[],
 	int flags, int width, int precision, int size);
+int write_pointer(char buffer[], int index, int len, int width, int flags, char pad, char ext_c, int pad_start);
+ int write_num(int index, char bff[], int flags, int width, int precision, int len, char pad, char ext_c);
 int write_number(int is_positive, int index, char buffer[],
 	int flags, int width, int precision, int size);
-int write_num(int index, char bff[], int flags, int width, int precision,
-	int len, char pad, char ext_c);
-int write_pointer(char buffer[], int index, int len,
-	int width, int flags, char pad, char ext_c, int pad_start);
 int handle_write_char(char c, char buffer[],
 	int flags, int width, int precision, int size);
 int write_unsgnd(int isNegative, int index,
-char buffer[],
-	int flags, int width, int precision, int size);
+char buffer[], int flags, int width, int precision, int size);
 #endif

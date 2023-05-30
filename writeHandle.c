@@ -1,18 +1,18 @@
 #include "main.h"
 /**
  * handle_write_char - Function prints a string
- * @c: chars.
- * @buffer: handle print
- * @flags:  active flags.
- * @width: width.
- * @precision: precision
- * @size: Specifier
+ * size: specifier
+ * @width: width (gets the width)
+ * @flags:  active flags
+ * @buffer: handles printing (this is a buffer array)
+ * @precision: specifies the precision
+ * @c: type of  characters
  * Return: chars printed.
  */
 int handle_write_char(char c, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	int i = 0;
+	int b = 0;
 	char pad = ' ';
 
 	UNUSED(precision);
@@ -20,19 +20,19 @@ int handle_write_char(char c, char buffer[],
 
 	if (flags & F_ZERO)
 		pad = '0';
-	buffer[i++] = c;
-	buffer[i] = '\0';
+	buffer[b++] = c;
+	buffer[b] = '\0';
 
 	if (width > 1)
 	{
 		buffer[BUFF_SIZE - 1] = '\0';
-		for (i = 0; i < width - 1; i++)
-			buffer[BUFF_SIZE - i - 2] = pad;
+		for (b = 0; b < width - 1; b++)
+			buffer[BUFF_SIZE - b - 2] = pad;
 		if (flags & F_MINUS)
 			return (write(1, &buffer[0], 1) +
-					write(1, &buffer[BUFF_SIZE - i - 1], width - 1));
+					write(1, &buffer[BUFF_SIZE - b - 1], width - 1));
 		else
-			return (write(1, &buffer[BUFF_SIZE - i - 1], width - 1) +
+			return (write(1, &buffer[BUFF_SIZE - b - 1], width - 1) +
 					write(1, &buffer[0], 1));
 	}
 
@@ -41,13 +41,13 @@ int handle_write_char(char c, char buffer[],
 /**
  * write_number - Prints a string of numbers
  * @isNegative: arguments
- * @index: chars.
- * @buffer: handle print
+ * @size: specifies the size
+ * @width: width
  * @flags:  active flags
- * @width: width.
- * @precision: precision
- * @size: Specifier
- * Return: chars printed.
+ * @buffer: handles printing (this is a buffer array)
+ * @precision: specifies the precision
+ * @index: types of characters
+ * Return: chars printed
  */
 int write_number(int isNegative, int index, char buffer[],
 	int flags, int width, int precision, int size)
@@ -71,78 +71,78 @@ int write_number(int isNegative, int index, char buffer[],
 
 /**
  * write_num - Writes number using a bufffer
- * @index: Index where the number starts on the buffer
- * @buffer: Buffer size
- * @flags: Flags used
+ * @ext_ch: an extra character
+ * @len: length of the number
+ * @pad: Pading
  * @width: width set
  * @prec: Precision
- * @len: length
- * @pad: Pading
- * @ext_c: char
- * Return: printed chars.
+ * @buffer: Buffer size
+ * @flags: Flags used
+ * @index: where the number starts on the buffer
+ * Return: the amount of printed character
  */
 int write_num(int index, char buffer[],
 	int flags, int width, int prec,
-	int len, char pad, char ext_c)
+	int len, char pad, char ext_ch)
 {
-	int i, pad_start = 1;
+	int b, pad_start = 1;
 
 	if (prec == 0 && index == BUFF_SIZE - 2 && buffer[index] == '0' && width == 0)
 		return (0);
 	if (prec == 0 && index == BUFF_SIZE - 2 && buffer[index] == '0')
-		buffer[index] = pad = ' '; /* width is displayed with padding ' ' */
+		buffer[index] = pad = ' '; /* the width is normally shown with padding ' ' */
 	if (prec > 0 && prec < len)
 		pad = ' ';
 	while (prec > len)
 		buffer[--index] = '0', len++;
-	if (ext_c != 0)
+	if (ext_ch != 0)
 		len++;
 	if (width > len)
 	{
-		for (i = 1; i < width - len + 1; i++)
-			buffer[i] = pad;
-		buffer[i] = '\0';
+		for (b = 1; b < width - len + 1; b++)
+			buffer[b] = pad;
+		buffer[b] = '\0';
 		if (flags & F_MINUS && pad == ' ')
 		{
-			if (ext_c)
-				buffer[--index] = ext_c;
-			return (write(1, &buffer[index], len) + write(1, &buffer[1], i - 1));
+			if (ext_ch)
+				buffer[--index] = ext_ch;
+			return (write(1, &buffer[index], len) + write(1, &buffer[1], b - 1));
 		}
 		else if (!(flags & F_MINUS) && pad == ' ')
 		{
-			if (ext_c)
-				buffer[--index] = ext_c;
-			return (write(1, &buffer[1], i - 1) + write(1, &buffer[index], len));
+			if (ext_ch)
+				buffer[--index] = ext_ch;
+			return (write(1, &buffer[1], b - 1) + write(1, &buffer[index], len));
 		}
 		else if (!(flags & F_MINUS) && pad == '0')
 		{
-			if (ext_c)
-				buffer[--pad_start] = ext_c;
-			return (write(1, &buffer[pad_start], i - pad_start) +
+			if (ext_ch)
+				buffer[--pad_start] = ext_ch;
+			return (write(1, &buffer[pad_start], b - pad_start) +
 				write(1, &buffer[index], len - (1 - pad_start)));
 		}
 	}
-	if (ext_c)
-		buffer[--index] = ext_c;
+	if (ext_ch)
+		buffer[--index] = ext_ch;
 	return (write(1, &buffer[index], len));
 }
 
 /**
  * write_unsgnd - unsigned number
- * @isNegative: num is negative
- * @index: number starts in the buffer
- * @buffer: chars
- * @flags: Flags
- * @width: Width
- * @precision: Precision
- * @size: Size
+ * @isNegative: this indicates if the digit is negative
+ * @size: specifier of the size
+ * @width: specifier of the width
+ * @precision: specifier of the precision
+ * @flags: specifier of the flags
+ * @buffer: characters array
+ * @index: where the digit begins in the buffer
  * Return: written chars.
  */
 int write_unsgnd(int isNegative, int index,
 	char buffer[],
 	int flags, int width, int precision, int size)
 {
-	int len = BUFF_SIZE - index - 1, i = 0;
+	int len = BUFF_SIZE - index - 1, b = 0;
 	char pad = ' ';
 
 	UNUSED(isNegative);
@@ -163,18 +163,18 @@ int write_unsgnd(int isNegative, int index,
 
 	if (width > len)
 	{
-		for (i = 0; i < width - len; i++)
-			buffer[i] = pad;
+		for (b = 0; b < width - len; b++)
+			buffer[b] = pad;
 
-		buffer[i] = '\0';
+		buffer[b] = '\0';
 
 		if (flags & F_MINUS)
 		{
-			return (write(1, &buffer[index], len) + write(1, &buffer[0], i));
+			return (write(1, &buffer[index], len) + write(1, &buffer[0], b));
 		}
 		else
 		{
-			return (write(1, &buffer[0], i) + write(1, &buffer[index], len));
+			return (write(1, &buffer[0], b) + write(1, &buffer[index], len));
 		}
 	}
 
@@ -183,56 +183,57 @@ int write_unsgnd(int isNegative, int index,
 
 /**
  * write_pointer - Writes memory address
- * @buffer: chars
- * @index: number starts in the buffer
+ * @pad_begin: this is where padding should begin
+ * @ext_ch: extra character
  * @len: number length
- * @width: Width
- * @flags: Flags
- * @pad: padding
- * @ext_c: extra char
- * @pad_start: padding should start
- * Return: written chars.
+ * @flags:specifies the flags
+ * @width: specifies the width
+ * @pad: padding (the character representative of the process)
+ * @len: number length
+ * @index: this is where the number begins in buffer
+ * @buffer: character array
+ * Return: written chars
  */
 int write_pointer(char buffer[], int index, int len,
-	int width, int flags, char pad, char ext_c, int pad_start)
+	int width, int flags, char pad, char ext_c, int pad_begin)
 {
-	int i;
+	int b;
 
 	if (width > len)
 	{
-		for (i = 3; i < width - len + 3; i++)
-			buffer[i] = pad;
-		buffer[i] = '\0';
+		for (b = 3; b < width - len + 3; b++)
+			buffer[b] = pad;
+		buffer[b] = '\0';
 		if (flags & F_MINUS && pad == ' ')
 		{
 			buffer[--index] = 'x';
 			buffer[--index] = '0';
-			if (ext_c)
-				buffer[--index] = ext_c;
-			return (write(1, &buffer[index], len) + write(1, &buffer[3], i - 3));
+			if (ext_ch)
+				buffer[--index] = ext_ch;
+			return (write(1, &buffer[index], len) + write(1, &buffer[3], b - 3));
 		}
 		else if (!(flags & F_MINUS) && pad == ' ')
 		{
 			buffer[--index] = 'x';
 			buffer[--index] = '0';
-			if (ext_c)
-				buffer[--index] = ext_c;
-			return (write(1, &buffer[3], i - 3) + write(1, &buffer[index], len));
+			if (ext_ch)
+				buffer[--index] = ext_ch;
+			return (write(1, &buffer[3], b - 3) + write(1, &buffer[index], len));
 		}
 		else if (!(flags & F_MINUS) && pad == '0')
 		{
-			if (ext_c)
-				buffer[--pad_start] = ext_c;
+			if (ext_ch)
+				buffer[--pad_begin] = ext_ch;
 			buffer[1] = '0';
 			buffer[2] = 'x';
-			return (write(1, &buffer[pad_start], i - pad_start) +
-				write(1, &buffer[index], len - (1 - pad_start) - 2));
+			return (write(1, &buffer[pad_begin], b - pad_begin) +
+				write(1, &buffer[index], len - (1 - pad_begin) - 2));
 		}
 	}
 	buffer[--index] = 'x';
 	buffer[--index] = '0';
-	if (ext_c)
-		buffer[--index] = ext_c;
+	if (ext_ch)
+		buffer[--index] = ext_ch;
 	return (write(1, &buffer[index], BUFF_SIZE - index - 1));
 }
 
