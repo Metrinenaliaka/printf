@@ -13,7 +13,6 @@ int _printf(const char *format, ...)
 	int width, flags, size, index = 0, precision;
 	va_list ap;
 	char buffer[BUFF_SIZE];
-
 	if (format == NULL)
 		return (-1);
 	va_start(ap, format);
@@ -35,6 +34,8 @@ int _printf(const char *format, ...)
 			precision = get_precision(format, &k, ap);
 			size = get_size(format, &k);
 			++k;
+			value = handle_print(format, &k, ap, buffer,
+				flags, width, precision, size);
 			value = handle_print(format, &k, ap, buffer, flags, width, precision, size);
 			if (value == -1)
 				return (-1);
@@ -45,7 +46,6 @@ int _printf(const char *format, ...)
 	va_end(ap);
 	return (count);
 }
-
 /**
  * print_buffer - Prints contents of the buffer
  * @buffer: Array of chars
@@ -55,7 +55,5 @@ void print_buffer(char buffer[], int *index)
 {
 	if (*index > 0)
 		write(1, &buffer[0], *index);
-
 	*index = 0;
 }
-

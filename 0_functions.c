@@ -1,12 +1,12 @@
 #include "main.h"
 /**
  * print_char - Prints a charachter
- * @args: arguments
- * @buffer: rray handles print
  * @flags:  active flags
- * @width: Width of chars
+ * @args: arguments
+ * @buffer: array handles print
  * @precision: specification for precision
  * @size: Size of specifier
+ * @width: Width of characters
  * Return: printed chars
  */
 int print_char(va_list args, char buffer[],
